@@ -1,31 +1,33 @@
-
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
 
-public class SendEmail {
-   
-   public void email(String e, String product){
+public class tesMePls {
+   public void email(String sendTo, String product, double price, String url){
       // Recipient's email ID needs to be mentioned.
-      String to = e;
+      String to = sendTo;
 
       // Sender's email ID needs to be mentioned
       //no real email yet
-      String from = "web@gmail.com";
+      final String from = "emailjavatext@gmail.com";
+      final String fromPassword = "CS321Team8CKMS";
 
-      // Assuming you are sending email from localhost
-      String host = "localhost";
+      // Sets up the Email Properties
+      Properties properties = new Properties();
+      properties.put("mail.smtp.auth","true");
+      properties.put("mail.smtp.starttls.enable", "true");
+      properties.put("mail.smtp.host", "smtp.gmail.com");
+      properties.put("mail.smtp.port","587");
 
-      // Get system properties
-      Properties properties = System.getProperties();
 
-      // Setup mail server
-      properties.setProperty("mail.smtp.host", host);
-
-      // Get the default Session object.
-      Session session = Session.getDefaultInstance(properties);
-
+      // Set the Session properties
+      Session session = Session.getInstance(properties, new Authenticator() {
+          @Override
+          protected PasswordAuthentication getPasswordAuthentication() {
+              return new PasswordAuthentication(from,fromPassword);
+          }
+      });
+      
       try {
          // Create a default MimeMessage object.
          MimeMessage message = new MimeMessage(session);
@@ -34,20 +36,20 @@ public class SendEmail {
          message.setFrom(new InternetAddress(from));
 
          // Set To: header field of the header.
-         message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+         message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
          // Set Subject: header field
          message.setSubject("Price Monitor FeedBack");
 
          // Now set the actual message
-         message.setText("The Product " + product +" has fallen bellow your requested price");
+         message.setText("The Product " + product +" has fallen bellow your requested price to " + price + "\n" + url);
 
          // Send message
          Transport.send(message);
-         System.out.println("Sent message successfully....");
          
-      } catch (MessagingException mex) {
-         mex.printStackTrace();
+      } catch (Exception e) {
+         e.printStackTrace();
       }
    }
+   
 }
