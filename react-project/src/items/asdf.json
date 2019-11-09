@@ -1,0 +1,34 @@
+[
+	{
+		"name": "asdf",
+		"price": {
+			"amazon": 149.99,
+			"ebay": null,
+			"bestbuy": null
+		},
+		"history": {
+			"amazon":{
+				"20191021": 149.99,
+				"20191022": 149.99
+			},
+		"ebay": null,
+		"bestbuy": null
+		}
+	},
+	{
+		"name": "fdsa",
+		"price": {
+			"amazon": 111.99,
+			"ebay": null,
+			"bestbuy": null
+		},
+		"history": {
+			"amazon":{
+				"20191021": 141.99,
+				"20191022": 111.99
+			},
+		"ebay": null,
+		"bestbuy": null
+		}
+	}
+]
