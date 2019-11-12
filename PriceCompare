@@ -1,0 +1,36 @@
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Scanner;
+import java.io.*;
+
+/**
+* @author Kelly Glebus
+* very ugly version
+* to accompany Steven Yun's
+* "ugly" html scraper
+*
+* to do:
+*  - most of it
+*/
+
+// Reads in the text file from the html scraper
+public class priceCompare{
+    public static void main(String[] args) throws FileNotFoundException{
+      File file = new File(//TBD);
+      boolean isSmaller = comparePrice();
+    }
+
+    //reads last price entry, compares to target price
+    public static boolean comparePrice(double targetPrice, File file){
+      Scanner sc = new Scanner(file);
+      String lastValue = "";
+      while(sc.hasNextLine()){
+        lastValue = sc.nextLine();
+      }
+      double price = Double.parseDouble(lastValue);
+      if(price <= targetPrice){
+        return true;
+      }
+      return false;
+    }
+}
