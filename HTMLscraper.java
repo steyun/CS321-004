@@ -1,8 +1,16 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -11,229 +19,183 @@ import org.jsoup.select.Elements;
 /**
  * 
  * @author Steven Yun
- * very ugly version
+ * @date November 11 2019
  *  
- *  --- 
- *  to do:
- *  ~ write to .txt
- *  ~ fix target scraping
- *  ~ periodic scraping (hourly)
- *  ~ clean up tests + comment 
- *  ---
+ * Prompts user for url of the item they wish to track. Program works with urls from amazon.com, walmart.com and bestbuy.com.
+ * The prices will be written to a file every hour along with the current date at the time of the price update. 
  */
-
-
-// prompts user for url input, returns the current price and prints out price
-public class HTMLscraper implements Runnable {
+public class HTMLscraper extends TimerTask {
 	
-	/*Thread t = new Thread()
+	// decides case from user inputted url
+	private static int siteID(String url)
 	{
-	    @Override
-	    public void run() {
-	        while(true) {
-	            try {
-	                Thread.sleep(1000*60*60);
-	                //your code here...
-	            } catch (InterruptedException ie) {
-	            }
-	        }
-	    }
-	};
-	t.start();*/
-	
-
-	public static void main(String[] args) {
-		Runnable r = new HTMLscraper();
-		Thread t = new Thread(r); //{
-		    /*@Override
-		    public void run() {
-		        while(true) {
-		            try {
-		            	System.out.println("hey");
-		            	Thread.sleep(2000); 
-		                
-		            } 
-		            catch (InterruptedException ie) {
-		            	
-		            }
-		        }
-		    }
-		};*/
-		
-		int site = 0;
-		System.out.println("Running...");
-		//String url = "https://www.amazon.com/Kamikara-Penguin-Action-Haruki-Nakamura/dp/B077JGWRH8/ref=sr_1_4";
-		
-		Scanner input = new Scanner(System.in);
-		System.out.print("Please enter the url: ");
-		String url = input.nextLine();
+		int ans = 0;
 		if(url.contains("amazon.com"))
 		{
-			site = 1;
+			ans = 1;
 		}
 		else if(url.contains("walmart.com"))
 		{
-			
-			site = 2;
+			ans = 2;
 		}
-		else if(url.contains("target.com"))
+		else if(url.contains("bestbuy.com"))
 		{
-			site = 3;
-			
+			ans = 3;	
 		}
-		//t.start();
-		switch(site) {
+		return ans;
+	}
+	
+	// prompts user for input for url
+	private static String readInput()
+	{
+		@SuppressWarnings("resource")
+		Scanner input = new Scanner(System.in);
+		System.out.println("Please enter the url: ");
+		String url = input.nextLine();
+		return url;
+	}
+	
+	// returns the price from a given site and its url, price stored in BigDecimal object
+	private static BigDecimal getPrice(int siteNum, String url)
+	{
+		BigDecimal currPrice;
+		switch(siteNum) {
 		case 1:
 			try {
 		
-			Document page = Jsoup.connect(url).userAgent("user").get();
-			//Elements price = page.select("a-section:contains($)");
-			Elements price = page.select(".a-size-medium.a-color-price:contains($)");
-
-			System.out.println("Current price is " + price.get(0).text());
-			
-			// convert string to a price format, number object
-			String temp = price.get(0).text();
-			NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
-			Number num = fixedPrice.parse(temp);
-			
-			BigDecimal currPrice = new BigDecimal(num.toString()); // for comparison
-			//System.out.println("SUCCESS = " + currPrice.toString());
-			
-			//prints all prices, for testing
-			/*
-			for(int i = 0; i <price.size(); i++)
-			{
-				//System.out.println(title.get(i).text());
-				System.out.println(price.get(i).text());
-		
-			}*/
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-		
-			}
-			break;
-		case 2:
-			try {
-				
-			Document page = Jsoup.connect(url).userAgent("user").get();
-			//Elements price = page.select("a-section:contains($)");
-			Elements price = page.select(".price.display-inline-block.arrange-fit.price--stylized:contains($)");
-
-			
-			
-			// convert string to a price format, number object
-			String temp = price.get(0).text();
-			int len = temp.length()/2;
-			String temp1 = temp.substring(0,len);
-			System.out.println("Current price is " + temp1);
-			NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
-			Number num = fixedPrice.parse(temp1); 
-			
-			BigDecimal currPrice = new BigDecimal(num.toString()); // for comparison
-			//System.out.println("SUCCESS = " + currPrice.toString());
-			 
-			//prints all prices, for testing
-			/*
-			for(int i = 0; i <price.size(); i++)
-			{
-				//System.out.println(title.get(i).text());
-				System.out.println(price.get(i).text());
-		
-			}*/
-			break;
-			}
-		
-			catch(Exception e) {
-				e.printStackTrace();
-		
-			}
-			break;
-		case 3:
-			try {
-				
 				Document page = Jsoup.connect(url).userAgent("user").get();
-				Elements price = page.select("[data-test = 'product-price']");
-				//Elements price = page.select("div.h-text-bold.style__PriceFontSize-gob4i1-0.eLdTvF");
-				
-				System.out.println("Current price is " + price.text());
-				
-				// convert string to a price format, number object
-				String temp = price.get(0).text();
-				NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
-				Number num = fixedPrice.parse(temp);
-				
-				BigDecimal currPrice = new BigDecimal(num.toString()); // for comparison
-				//System.out.println("SUCCESS = " + currPrice.toString());
-				
-				//prints all prices, for testing
-				/*
-				for(int i = 0; i <price.size(); i++)
-				{
-					//System.out.println(title.get(i).text());
-					System.out.println(price.get(i).text());
-			
-				}*/
-				}
-				catch(Exception e) {
-					e.printStackTrace();
-			
-				}
-				break;
-		}
-		System.out.println("done."); 
-	}
-
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/*
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		//while(true) {
-		Scanner input = new Scanner(System.in);
-		System.out.print("Please enter the url: ");
-		
-		String url = input.nextLine();
-		while(true) {
-			try {
-				
-				Document page = Jsoup.connect(url).userAgent("user").get();
-				//Elements price = page.select("a-section:contains($)");
 				Elements price = page.select(".a-size-medium.a-color-price:contains($)");
-
+				
 				System.out.println("Current price is " + price.get(0).text());
 				
 				// convert string to a price format, number object
 				String temp = price.get(0).text();
 				NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
 				Number num = fixedPrice.parse(temp);
-				
-				BigDecimal currPrice = new BigDecimal(num.toString()); // for comparison
-				//System.out.println("SUCCESS = " + currPrice.toString());
-				
-				//prints all prices, for testing
-				
-				for(int i = 0; i <price.size(); i++)
-				{
-					//System.out.println(title.get(i).text());
-					System.out.println(price.get(i).text());
-			
-				}
+				currPrice = new BigDecimal(num.toString()); // for comparison
+				return currPrice;
 			}
 			catch(Exception e) {
 				e.printStackTrace();
-			
-			}}
-        }
-    
-	}*/
-
-
+			}
+			break;
+		case 2:
+			try {
+				
+				Document page = Jsoup.connect(url).userAgent("user").get();
 	
+				Elements price = page.select(".price.display-inline-block.arrange-fit.price--stylized:contains($)");
+	
+				// convert string to a price format, number object
+				String temp = price.get(0).text();
+				int len = temp.length()/2;
+				String temp1 = temp.substring(0,len);
+				System.out.println("Current price is " + temp1);
+				NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
+				Number num = fixedPrice.parse(temp1); 
+				
+				currPrice = new BigDecimal(num.toString()); // for comparison
+				return currPrice;
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+			break;
+			
+		case 3:
+			try {
+				
+				Document page = Jsoup.connect(url).userAgent("user").get();
+				Elements price = page.select(".priceView-hero-price.priceView-customer-price");
+				
+				// convert string to a price format, number object
+				String temp = price.text();
+				NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
+				Number num = fixedPrice.parse(temp);				
+				currPrice = new BigDecimal(num.toString()); // for comparison
+
+				return currPrice;
+			}
+			catch(Exception e) {
+					e.printStackTrace();
+			}
+			break;
+		}
+		return currPrice = new BigDecimal("NULL");
+	}
+	
+	// creates a new file for an item, if file already exists creates a new file
+	public static String createFile() {
+		String finalFile = ""; 
+		try{    
+			  int nameCount = 0;
+			  String filename = "item.txt";
+			  String itemName = "item";
+			  File temp = new File(filename);
+			  boolean x = temp.exists();
+			  while (x == true){
+				  nameCount++;
+				  filename = itemName + nameCount + ".txt";
+				  temp = new File(filename);
+				  x = temp.exists();
+			  	}
+			  finalFile = filename;
+	           FileWriter fw=new FileWriter(filename);    
+	           fw.write("Prices are recorded every hour.\n");    
+	           fw.close();    
+	          }
+		  catch(Exception e)
+		  	{System.out.println(e);}    
+	         System.out.println("Success...");  
+		return finalFile;
+		
+	}
+	
+	// records current price and date to file
+	public static void writeToFile(String f, BigDecimal p) {
+		
+		Date now = new Date();
+		try {
+			FileWriter fw = new FileWriter(f, true);
+			fw.write("The price as of " + now + " is $" + p.toString() + "\n");
+			fw.close();
+		}
+		catch(Exception e)
+		{System.out.println(e);}
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+		
+		System.out.println("Running...");
+
+		String url = readInput();
+		int site = siteID(url);
+		BigDecimal price = getPrice(site, url);
+		String fileName = createFile();
+	
+		System.out.println("The current price of your item is: " + price.toString());
+		
+		// updates and writes current price to file every 3 seconds for 5 iterations
+		for (int i = 0; i <= 5; i++) {
+			System.out.println("Updating to the most recent price...." + i);
+			writeToFile(fileName, price);
+			Thread.sleep(2000);
+			price = getPrice(site, url);
+			
+			if (i == 5) {
+				System.out.println("The price has been updated to the most current price.");
+				System.exit(0);
+			}
+		}
+		
+		System.out.println("done.");
+
+	}
+
+	@Override
+	public void run() {
+		Date now = new Date(); // initialize date
+		System.out.println("Time is :" + now); // Display current time
+	}
+
 }
