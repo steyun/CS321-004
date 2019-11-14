@@ -66,7 +66,7 @@ public class HTMLscraper extends TimerTask {
 				Document page = Jsoup.connect(url).userAgent("user").get();
 				Elements price = page.select(".a-size-medium.a-color-price:contains($)");
 				
-				System.out.println("Current price is " + price.get(0).text());
+				System.out.println("The current price of your item is: " + price.get(0).text());
 				
 				// convert string to a price format, number object
 				String temp = price.get(0).text();
@@ -90,7 +90,7 @@ public class HTMLscraper extends TimerTask {
 				String temp = price.get(0).text();
 				int len = temp.length()/2;
 				String temp1 = temp.substring(0,len);
-				System.out.println("Current price is " + temp1);
+				System.out.println("The current price of your item is: " + temp1);
 				NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
 				Number num = fixedPrice.parse(temp1); 
 				
@@ -110,9 +110,12 @@ public class HTMLscraper extends TimerTask {
 				
 				// convert string to a price format, number object
 				String temp = price.text();
+				
+
 				NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
 				Number num = fixedPrice.parse(temp);				
 				currPrice = new BigDecimal(num.toString()); // for comparison
+				System.out.println("The current price of your item is: $" + currPrice);
 
 				return currPrice;
 			}
@@ -173,7 +176,7 @@ public class HTMLscraper extends TimerTask {
 		BigDecimal price = getPrice(site, url);
 		String fileName = createFile();
 	
-		System.out.println("The current price of your item is: " + price.toString());
+
 		
 		// updates and writes current price to file every 3 seconds for 5 iterations
 		for (int i = 0; i <= 5; i++) {
