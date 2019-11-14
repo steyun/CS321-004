@@ -20,13 +20,19 @@ import org.jsoup.select.Elements;
  * 
  * @author Steven Yun
  * @date November 11 2019
+ * @version 1.5
  *  
  * Prompts user for url of the item they wish to track. Program works with urls from amazon.com, walmart.com and bestbuy.com.
  * The prices will be written to a file every hour along with the current date at the time of the price update. 
  */
 public class HTMLscraper extends TimerTask {
 	
-	// decides case from user inputted url
+	/**
+	 * Given a url, return an int to use in switch statement matching website
+	 * @param String url
+	 * @return int to match site to scrape
+	 * @throws InterruptedException
+	 */
 	private static int siteID(String url) throws InterruptedException
 	{
 		int ans = 0;
@@ -51,7 +57,10 @@ public class HTMLscraper extends TimerTask {
 		return ans;
 	}
 	
-	// prompts user for input for url
+	/**
+	 * Prompts user for url input through System.in, return url
+	 * @return String url, users input
+	 */
 	private static String readInput()
 	{
 		@SuppressWarnings("resource")
@@ -61,14 +70,18 @@ public class HTMLscraper extends TimerTask {
 		return url;
 	}
 	
-	// returns the price from a given site and its url, price stored in BigDecimal object
+	/**
+	 * Returns the current price of an item the user wishes to track
+	 * @param int siteNum site: to scrape
+	 * @param String url: of item
+	 * @return BigDecimal object that has current price of item
+	 */
 	private static BigDecimal getPrice(int siteNum, String url)
 	{
 		BigDecimal currPrice;
 		switch(siteNum) {
 		case 1:
 			try {
-		
 				Document page = Jsoup.connect(url).userAgent("user").get();
 				Elements price = page.select(".a-size-medium.a-color-price:contains($)");
 				System.out.println("The current price of your item is: " + price.get(0).text());
@@ -130,7 +143,10 @@ public class HTMLscraper extends TimerTask {
 		return currPrice = new BigDecimal("NULL");
 	}
 	
-	// creates a new file for an item, if file already exists creates a new file
+	/**
+	 * Attempts to create a file, if file already exists creates a new file
+	 * @return finalFile, name of file
+	 */
 	private static String createFile() {
 		String finalFile = ""; 
 		try{    
@@ -157,7 +173,11 @@ public class HTMLscraper extends TimerTask {
 		return finalFile;		
 	}
 	
-	// records current price and date to file
+	/**
+	 * Writes the current price of the item and current date to file
+	 * @param f: file name
+	 * @param p: price
+	 */
 	private static void writeToFile(String f, BigDecimal p) {
 		
 		Date now = new Date();
