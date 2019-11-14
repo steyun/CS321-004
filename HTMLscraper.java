@@ -16,6 +16,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
+/** to do
+ *  item name from user
+ *  exception 
+ */
+
 /**
  * 
  * @author Steven Yun
@@ -29,6 +34,7 @@ public class HTMLscraper extends TimerTask {
 	
 	/**
 	 * Given a url, return an int to use in switch statement matching website
+	 * If url is not from one of predetermined urls, print error message and exit program
 	 * @param String url
 	 * @return int to match site to scrape
 	 * @throws InterruptedException
@@ -54,11 +60,16 @@ public class HTMLscraper extends TimerTask {
 			System.out.println("Searching through Best Buy's website for your item...");
 			Thread.sleep(2000);
 		}
+		else
+		{
+			System.out.println("Invalid URL. Exiting program.");
+			System.exit(0);
+		}
 		return ans;
 	}
 	
 	/**
-	 * Prompts user for url input through System.in, return url
+	 * Prompts user for url inputm returns url as a String
 	 * @return String url, users input
 	 */
 	private static String readInput()
@@ -68,6 +79,19 @@ public class HTMLscraper extends TimerTask {
 		System.out.println("Please enter the url: ");
 		String url = input.nextLine();
 		return url;
+	}
+	
+	/**
+	 * Prompts user for name of item, returns the name as a String
+	 * @return
+	 */
+	private static String readItemInput()
+	{
+		@SuppressWarnings("resource")
+		Scanner input = new Scanner(System.in);
+		System.out.println("Please enter the item name: ");
+		String name = input.nextLine();
+		return name;
 	}
 	
 	/**
@@ -99,9 +123,7 @@ public class HTMLscraper extends TimerTask {
 			break;
 		case 2:
 			try {
-				
 				Document page = Jsoup.connect(url).userAgent("user").get();
-	
 				Elements price = page.select(".price.display-inline-block.arrange-fit.price--stylized:contains($)");
 	
 				// convert string to a price format, number object
@@ -120,7 +142,6 @@ public class HTMLscraper extends TimerTask {
 				e.printStackTrace();
 			}
 			break;
-			
 		case 3:
 			try {
 				
@@ -145,14 +166,16 @@ public class HTMLscraper extends TimerTask {
 	
 	/**
 	 * Attempts to create a file, if file already exists creates a new file
+	 * @param name of item from user
 	 * @return finalFile, name of file
 	 */
-	private static String createFile() {
+	private static String createFile(String itemX) {
+		// file name is item name
 		String finalFile = ""; 
 		try{    
-			  int nameCount = 0;
-			  String filename = "item.txt";
-			  String itemName = "item";
+			  int nameCount = 0;			  
+			  String filename = itemX + ".txt";
+			  String itemName = itemX;
 			  File temp = new File(filename);
 			  boolean x = temp.exists();
 			  while (x == true){
@@ -162,8 +185,7 @@ public class HTMLscraper extends TimerTask {
 				  x = temp.exists();
 			  	}
 			  finalFile = filename;
-	           FileWriter fw=new FileWriter(filename);    
-	           fw.write("Prices are recorded every hour.\n");    
+	           FileWriter fw=new FileWriter(filename);       
 	           fw.close();    
 	          }
 		  catch(Exception e)
@@ -183,7 +205,7 @@ public class HTMLscraper extends TimerTask {
 		Date now = new Date();
 		try {
 			FileWriter fw = new FileWriter(f, true);
-			fw.write("The price as of " + now + " is $" + p.toString() + "\n");
+			fw.write(p.toString() + "\t" + now + "\n"); // format: price "tab" date "newline"
 			fw.close();
 		}
 		catch(Exception e)
@@ -194,12 +216,13 @@ public class HTMLscraper extends TimerTask {
 		
 		System.out.println("Running...");
 
+		String name = readItemInput();
 		String url = readInput();
 		int site = siteID(url);
 		BigDecimal price = getPrice(site, url);
-		String fileName = createFile();
+		String fileName = createFile(name);
 	
-		// updates and writes current price to file every 3 seconds for 5 iterations
+		// updates and writes current price to file every 3 seconds for 6 iterations
 		for (int i = 0; i <= 5; i++) {
 			System.out.println("Updating to the most recent price...." + i);
 			writeToFile(fileName, price);
