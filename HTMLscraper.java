@@ -27,20 +27,26 @@ import org.jsoup.select.Elements;
 public class HTMLscraper extends TimerTask {
 	
 	// decides case from user inputted url
-	private static int siteID(String url)
+	private static int siteID(String url) throws InterruptedException
 	{
 		int ans = 0;
 		if(url.contains("amazon.com"))
 		{
 			ans = 1;
+			System.out.println("Searching through Amazon's website for your item...");
+			Thread.sleep(2000);
 		}
 		else if(url.contains("walmart.com"))
 		{
 			ans = 2;
+			System.out.println("Searching through Walmart's website for your item...");
+			Thread.sleep(2000);
 		}
 		else if(url.contains("bestbuy.com"))
 		{
 			ans = 3;	
+			System.out.println("Searching through Best Buy's website for your item...");
+			Thread.sleep(2000);
 		}
 		return ans;
 	}
@@ -65,7 +71,6 @@ public class HTMLscraper extends TimerTask {
 		
 				Document page = Jsoup.connect(url).userAgent("user").get();
 				Elements price = page.select(".a-size-medium.a-color-price:contains($)");
-				
 				System.out.println("The current price of your item is: " + price.get(0).text());
 				
 				// convert string to a price format, number object
@@ -90,6 +95,7 @@ public class HTMLscraper extends TimerTask {
 				String temp = price.get(0).text();
 				int len = temp.length()/2;
 				String temp1 = temp.substring(0,len);
+
 				System.out.println("The current price of your item is: " + temp1);
 				NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
 				Number num = fixedPrice.parse(temp1); 
@@ -110,13 +116,10 @@ public class HTMLscraper extends TimerTask {
 				
 				// convert string to a price format, number object
 				String temp = price.text();
-				
-
 				NumberFormat fixedPrice = NumberFormat.getCurrencyInstance();
 				Number num = fixedPrice.parse(temp);				
 				currPrice = new BigDecimal(num.toString()); // for comparison
 				System.out.println("The current price of your item is: $" + currPrice);
-
 				return currPrice;
 			}
 			catch(Exception e) {
@@ -128,7 +131,7 @@ public class HTMLscraper extends TimerTask {
 	}
 	
 	// creates a new file for an item, if file already exists creates a new file
-	public static String createFile() {
+	private static String createFile() {
 		String finalFile = ""; 
 		try{    
 			  int nameCount = 0;
@@ -149,13 +152,13 @@ public class HTMLscraper extends TimerTask {
 	          }
 		  catch(Exception e)
 		  	{System.out.println(e);}    
-	         System.out.println("Success...");  
-		return finalFile;
-		
+	         System.out.println("\nFile for price history has been created."); 
+	         System.out.println("File name: " + finalFile + "\n");
+		return finalFile;		
 	}
 	
 	// records current price and date to file
-	public static void writeToFile(String f, BigDecimal p) {
+	private static void writeToFile(String f, BigDecimal p) {
 		
 		Date now = new Date();
 		try {
@@ -176,8 +179,6 @@ public class HTMLscraper extends TimerTask {
 		BigDecimal price = getPrice(site, url);
 		String fileName = createFile();
 	
-
-		
 		// updates and writes current price to file every 3 seconds for 5 iterations
 		for (int i = 0; i <= 5; i++) {
 			System.out.println("Updating to the most recent price...." + i);
@@ -186,13 +187,11 @@ public class HTMLscraper extends TimerTask {
 			price = getPrice(site, url);
 			
 			if (i == 5) {
-				System.out.println("The price has been updated to the most current price.");
+				System.out.println("\nThe price has been updated to the most current price.");
+				System.out.println("Program will now end.");
 				System.exit(0);
 			}
 		}
-		
-		System.out.println("done.");
-
 	}
 
 	@Override
@@ -200,5 +199,4 @@ public class HTMLscraper extends TimerTask {
 		Date now = new Date(); // initialize date
 		System.out.println("Time is :" + now); // Display current time
 	}
-
 }
