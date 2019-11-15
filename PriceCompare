@@ -5,29 +5,29 @@ import java.io.*;
 
 /**
 * @author Kelly Glebus
-* very ugly version
-* to accompany Steven Yun's
-* "ugly" html scraper
-*
-* to do:
-*  - most of it
+* Compare function for html scraper,
+* checks if the value is less than or equal to
+* the target price 
 */
 
-// Reads in the text file from the html scraper
-public class priceCompare{
-    public static void main(String[] args) throws FileNotFoundException{
-      File file = new File(//TBD);
-      boolean isSmaller = comparePrice();
-    }
 
-    //reads last price entry, compares to target price
-    public static boolean comparePrice(double targetPrice, File file){
+public class priceCompare{
+  /**
+  * Reads in the text file, moves to the last line and parses
+  * for the double that represents the current price. Checks if 
+  * it is less than or equal to target 
+  * @param double target price
+  * @param File file name
+  * @return boolean if it is less than or equal to the target
+  */
+    public static boolean comparePrice(double targetPrice, File file) throws FileNotFoundException{
       Scanner sc = new Scanner(file);
       String lastValue = "";
       while(sc.hasNextLine()){
         lastValue = sc.nextLine();
       }
-      double price = Double.parseDouble(lastValue);
+      Scanner sc2 = new Scanner(lastValue);
+      double price = sc2.nextDouble();
       if(price <= targetPrice){
         return true;
       }
