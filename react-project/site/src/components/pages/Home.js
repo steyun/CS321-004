@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,24 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { ClickAwayListener } from '@material-ui/core';
-import postData from '../../items/asdf.txt'
 import TextField from '@material-ui/core/TextField'
-const createData = (name , price, site) => {
-  const data = {name: name, 
-          price: price,
-        site: site}
-  return data
-}
-const useStyles = makeStyles({
-    root: {
-      width: '100%',
-    },
-    tableWrapper: {
-      // maxHeight: 440,
-      overflow: 'auto',
-    },
-  });
 class App extends Component {
     constructor() {
         super()
@@ -39,23 +21,6 @@ class App extends Component {
     async componentDidMount() {
         const resp = await fetch('http://localhost:8080/items');
         this.setState({data: await resp.json()});
-
-        // const items2 = []
-        // const fetched = await fetch(postData)
-        // .then((r) => r.text())
-        // .then(text => {
-        //     const jsonData = text.split('\n')
-        //     for (const value of jsonData){
-        //     const splut = value.split(' ') 
-        //     const name = splut[0]
-        //     const price = splut[1]
-        //     const site = splut[2]
-        //     items2.push(createData(name,price,site))
-        //     }
-        //     // items2 = JSON.stringify(items)
-        //     // items = items2
-        // })
-        // this.setState({data: items2})
     }
     
     render(){
@@ -83,11 +48,6 @@ class App extends Component {
         const handleFilterChange = event => {
           this.setState({filter: event.target.value.toLowerCase()})
         }
-      
-        const handleClick = event => {
-          alert('something was clicked!');
-          event.preventDefault();
-        };
         const columns = this.getColumns()
         return(
           <Paper>
@@ -134,7 +94,7 @@ class App extends Component {
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                     {columns.map(column => {
                                       const value = row[column.id];
-                                      if(column.id == "name"){
+                                      if(column.id === "name"){
                                         return(
                                           <TableCell key={column.id} align={column.align} >
                                             <a href={"../../items/"+value}>

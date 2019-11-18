@@ -24,16 +24,6 @@ function Form() {
       body: data
     })
   }
-  function upload(toUpload){
-    fetch('http://localhost:4000/upload', {
-      method: 'POST',
-      body: toUpload
-    }).then(response => {
-      response.json().then(body => {
-        this.setState({ imageURL: 'http://localhost:4000/asdf'});
-      });
-    });
-  }
   return (
     <div className='about'>
       <h1>Add new item</h1>

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 var url = window.location.href.split("/");
 const urlSplitLen = url.length;
-if( (urlSplitLen > 5) && (urlSplitLen == 6 && url[5] != '')){
+if( (urlSplitLen > 5) && (urlSplitLen === 6 && url[5] !== '')){
   window.location.href = "http://localhost:3000/404"
 }
 url = url[4];
@@ -59,7 +59,9 @@ class App extends Component{
       {" " + this.state.price}
       <br></br>
       <br></br>
-      {this.state.url}
+      <a href = {this.state.url}>
+        {this.state.url}
+      </a>
     </div>
     )}
 }

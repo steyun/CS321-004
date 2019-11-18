@@ -1,21 +1,12 @@
 import React, {Component} from "react";
-import _ from "lodash";
 import Grid from "../grid/grid"
 
 import Prices from "./panels/sitePrices.js"
 import GetNotified from "./panels/getNotified.js"
-import Timeline from "./panels/timeline.js"
-// import Grid from '@material-ui/core/Grid';
-// import Router from ""
-import { Text, TextInput, View } from 'react';
-import clsx from 'clsx';
-import Paper from '@material-ui/core/Paper';
-import { makeStyles } from '@material-ui/core/styles';
-import { Redirect } from 'react-router-dom';
 var url = window.location.href.split("/");
 console.log("log: " + window.location.href)
 const urlSplitLen = url.length;
-if( (urlSplitLen > 5) && (urlSplitLen == 6 && url[5] != '')){
+if( (urlSplitLen > 5) && (urlSplitLen === 6 && url[5] !== '')){
   window.location.href = "http://localhost:3000/404"
 }
 url = url[4];
@@ -43,7 +34,7 @@ class App extends Component{
     ];
     return (
     <div>
-      <h1>{url}</h1>
+      <h1>{url.toUpperCase()}</h1>
       <Grid items={panels} layout={layout} />
     </div>
     );
