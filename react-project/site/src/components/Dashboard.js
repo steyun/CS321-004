@@ -3,22 +3,15 @@ import Main from './pages/Main';
 import {mainListItems, secondaryListItems} from './sidebarList';
 import clsx from 'clsx';
 import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
-import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { connect } from 'net';
 import { CssBaseline, IconButton, Drawer } from '@material-ui/core';
-import { NavLink, Switch, Route } from 'react-router-dom';
 
 
 const drawerWidth=240;
