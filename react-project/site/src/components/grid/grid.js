@@ -6,7 +6,7 @@ const ReactGridLayout = WidthProvider(RGL);
 
 const styles = {
   panel: {
-    backgroundColor: "#333",
+    backgroundColor: "#888",
   },
 };
 

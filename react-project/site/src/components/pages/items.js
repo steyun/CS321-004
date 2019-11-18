@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import _ from "lodash";
-import RGL, { WidthProvider } from "react-grid-layout";
 import Grid from "../grid/grid"
 
 import Prices from "./panels/sitePrices.js"
@@ -13,17 +12,23 @@ import clsx from 'clsx';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import { Redirect } from 'react-router-dom';
+var url = window.location.href.split("/");
+console.log("log: " + window.location.href)
+const urlSplitLen = url.length;
+if( (urlSplitLen > 5) && (urlSplitLen == 6 && url[5] != '')){
+  window.location.href = "http://localhost:3000/404"
+}
+url = url[4];
+console.log(url)
 class App extends Component{
   constructor(props){
     super(props);
-    var url = window.location.href.split("/");
-    console.log("log: " + window.location.href)
-    const urlSplitLen = url.length;
-    if( (urlSplitLen > 5) && (urlSplitLen == 6 && url[5] != '')){
-      window.location.href = "http://localhost:3000/404"
+    
+    if(url.includes("%20")){
+      var splut = url.split("%20");
+      console.warn(splut)
+      url = splut[0] + " " + splut[1]
     }
-    url = url[4];
-    console.log(url)
   }
   render(){
     const panels = [
@@ -36,7 +41,12 @@ class App extends Component{
       { i: "2", x: 20, y: 0, w: 10, h: 10 },
       // { i: "3", x: 0, y: 17, w: 30, h: 15 },
     ];
-    return <Grid items={panels} layout={layout} />;
+    return (
+    <div>
+      <h1>{url}</h1>
+      <Grid items={panels} layout={layout} />
+    </div>
+    );
   }
 }
 export default App
