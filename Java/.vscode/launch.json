@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "1"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - HTMLscraper",
+            "request": "launch",
+            "mainClass": "HTMLscraper",
+            "projectName": "1"
+        }
+    ]
+}
