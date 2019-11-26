@@ -69,13 +69,14 @@ public class HTMLscraper extends TimerTask {
         double currPrice;
         switch (siteNum) {
         case 1:
-            try {
+            try { // amazon
                 Document page = Jsoup.connect(url).userAgent("user").get();
                 Elements price = page.select(".a-size-medium.a-color-price:contains($)");
                 System.out.println("The current price of your item is: " + price.get(0).text());
 
                 // convert string to a price format, number object
                 String temp = price.get(0).text().substring(1);
+                temp = temp.replaceAll(",", "");
                 currPrice = Double.parseDouble(temp); // for comparison
                 return currPrice;
             } catch (Exception e) {
@@ -83,12 +84,14 @@ public class HTMLscraper extends TimerTask {
             }
             break;
         case 2:
-            try {
+            try { // walmart
                 Document page = Jsoup.connect(url).userAgent("user").get();
                 Elements price = page.select(".price.display-inline-block.arrange-fit.price--stylized:contains($)");
                 
                 // convert string to a price format, number object
-                String temp = price.get(0).text().substring(1);
+                String temp = price.get(0).text();
+                temp = temp.substring(temp.length() / 2).substring(1);
+                temp = temp.replaceAll(",", "");
                 currPrice = Double.parseDouble(temp); // for comparison
                 return currPrice;
             } catch (Exception e) {
@@ -96,13 +99,15 @@ public class HTMLscraper extends TimerTask {
             }
             break;
         case 3:
-            try {
+            try { // bestbuy
 
                 Document page = Jsoup.connect(url).userAgent("user").get();
                 Elements price = page.select(".priceView-hero-price.priceView-customer-price");
 
                 // convert string to a price format, number object
-                String temp = price.get(0).text().substring(1);
+                String temp = price.get(0).text().split("Y")[0].substring(1);
+                temp = temp.replaceAll(",", "");
+                
                 currPrice = Double.parseDouble(temp); // for comparison
                 return currPrice;
                 
@@ -187,7 +192,7 @@ public class HTMLscraper extends TimerTask {
                 }
                 file.close();
                 if(inside == 0){
-                    String newVal = name + "," + price + "," + url + "\n";
+                    String newVal = name + ",$" + price + "," + url + "\n";
                     inputBuffer.append(newVal);
                 }
                 BufferedWriter file2 = new BufferedWriter(new FileWriter("./items.txt"));
